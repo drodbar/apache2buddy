@@ -1,10 +1,12 @@
 #!/bin/bash
 
+set -e -o pipefail
+
 BRANCH='master'
 REPO_URL="https://raw.githubusercontent.com/drodbar/apache2buddy"
 FULL_URL="${REPO_URL}/${BRANCH}"
-TEMPILE="$(mktemp)"
-script="$(curl -sL ${FULL_URL}/apache2buddy.pl > "${TEMPILE}")"
+script="$(mktemp)"
+curl -sL ${FULL_URL}/apache2buddy.pl > "${script}"
 
 scriptmd5sum="$(md5sum "${script}" | cut -d " " -f1)"
 originmd5sum="$(curl -s ${FULL_URL}/md5sums.txt | cut -d " " -f1)"
@@ -22,4 +24,4 @@ if [[ "$scriptsha256sum" != "$originsha256sum" ]]; then
     exit 1
 fi
 
-mv "${TEMPILE}" apache2buddy.pl
+mv "${script}" apache2buddy.pl
