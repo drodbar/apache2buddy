@@ -1783,7 +1783,7 @@ sub preflight_checks {
 		if ( ! $NOWARN ) {
 			show_warn_box; print "${YELLOW}Nothing seems to be listening on port $port.${ENDC} Falling back to process list...\n";
 		}
-		my @process_info = split(' ', `ps -C 'httpd httpd.worker apache apache2 /usr/sbin/httpd /usr/sbin/httpd.worker' -f | grep '^root'`);
+		my @process_info = split(' ', `ps -C 'httpd httpd.worker apache apache2 /usr/sbin/httpd /usr/sbin/httpd.worker' -f | sed -n 2p`);
 		$pid = $process_info[1];
 		if ( not $pid ) {
                         show_crit_box; print "apache process not found.\n";
@@ -2073,7 +2073,7 @@ sub preflight_checks {
 
 	# check 13.3
 	# figure out how much RAM is in the server
-	our $available_mem = `LANGUAGE=en_GB.UTF-8 free | grep \"Mem:\" | awk \'{ print \$2 }\'` / 1024;
+	our $available_mem = `cat /sys/fs/cgroup/memory/memory.max` / 1024;
 	$available_mem = floor($available_mem);
 
 	if ( ! $NOINFO ) { show_info_box(); print "Your server has ${CYAN}$available_mem MB${ENDC} of PHYSICAL memory.\n" }

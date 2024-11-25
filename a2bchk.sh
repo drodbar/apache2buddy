@@ -24,4 +24,6 @@ if [[ "$scriptsha256sum" != "$originsha256sum" ]]; then
     exit 1
 fi
 
-mv "${script}" apache2buddy.pl
+if [ ! -r apache2buddy.pl ]; then
+    mv -v "${script}" apache2buddy.pl
+fi
