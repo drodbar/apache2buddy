@@ -1832,7 +1832,7 @@ sub preflight_checks {
 			if ( ! $NOINFO ) { show_info_box; print "The process running on port ${CYAN}$port${ENDC} is ${CYAN}$apache_version${ENDC}.\n" }
 		}  else {
 			if ( ! $NOINFO ) { show_info_box; print "The process running on port $port is not Apache. Falling back to process list...\n" }
-			my @process_info = split(' ', `ps -C 'httpd httpd.worker apache apache2 /usr/sbin/httpd /usr/sbin/httpd.worker' -f | grep '^root'`);
+			my @process_info = split(' ', `ps -C 'httpd httpd.worker apache apache2 /usr/sbin/httpd /usr/sbin/httpd.worker' -f | sed -n 2p`);
 			$pid = $process_info[1];
 	
 			if ( !$pid ) {
@@ -2073,7 +2073,7 @@ sub preflight_checks {
 
 	# check 13.3
 	# figure out how much RAM is in the server
-	our $available_mem = `cat /sys/fs/cgroup/memory/memory.max` / 1024;
+	our $available_mem = `cat /sys/fs/cgroup/memory.max` / 1024 / 1024;
 	$available_mem = floor($available_mem);
 
 	if ( ! $NOINFO ) { show_info_box(); print "Your server has ${CYAN}$available_mem MB${ENDC} of PHYSICAL memory.\n" }
